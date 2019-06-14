@@ -1,3 +1,7 @@
+jhipster:
+  clientApp:
+    name: Sarafan
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/sarafan
@@ -10,8 +14,22 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+security:
+  oauth2:
+    client:
+      clientId: 750224693367-9vfb5e84ot1amlggps05i0g5e8gbhuju.apps.googleusercontent.com
+      clientSecret: X323giBO8Xdn5LM1Zsz37hSc
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+      clientAuthenticationScheme: form
+      scope: openid,email,profile
+#      tokenName: oauth_token
+#      authenticationScheme: query
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
 
-jhipster:
-  clientApp:
-    name: Sarafan
+
+
+
 
