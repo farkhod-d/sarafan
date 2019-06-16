@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.transaction.annotation.Transactional;
 import uz.gigalab.sarafan.domain.User;
 import uz.gigalab.sarafan.repository.UserDetailsRepository;
 import uz.gigalab.sarafan.service.UserDetailsService;
@@ -22,25 +23,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http
-            .authorizeRequests()
-            .mvcMatchers("/", "/login**", "/error**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-                .logout().logoutSuccessUrl("/").permitAll()
-            .and()
-                .csrf().disable();
-
-//        http
-//                .antMatcher("/**")
-//                .authorizeRequests()
-//                    .antMatchers("/", "/login**", "/error**")
-//                    .permitAll()
-//                .anyRequest()
-//                    .authenticated()
-//                .and()
-//                .csrf().disable()
-        //.and().logout().logoutSuccessUrl("/").permitAll()
-        ;
+                .antMatcher("/**")
+                .authorizeRequests()
+                    .antMatchers("/", "/login**", "/error**", "/js/**", "/favicon.ico")
+                    .permitAll()
+                .anyRequest()
+                    .authenticated()
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/")
+                    .permitAll()
+                .and()
+                    .csrf().disable();
         // @formatter:on
     }
 

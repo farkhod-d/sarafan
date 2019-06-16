@@ -3,6 +3,11 @@ jhipster:
     name: Sarafan
 
 spring:
+  session:
+    jdbc:
+      initialize-schema: always
+      table-name: SPRING_SESSION
+      schema: classpath:db/session_tables.sql
   datasource:
     url: jdbc:postgresql://localhost:5432/sarafan
     username: postgres
@@ -17,8 +22,8 @@ spring:
 security:
   oauth2:
     client:
-      clientId: 750224693367-9vfb5e84ot1amlggps05i0g5e8gbhuju.apps.googleusercontent.com
-      clientSecret: X323giBO8Xdn5LM1Zsz37hSc
+      clientId: ${clientId}
+      clientSecret: ${clientSecret}
       accessTokenUri: https://www.googleapis.com/oauth2/v4/token
       userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
       clientAuthenticationScheme: form
@@ -31,5 +36,5 @@ security:
 
 
 
-
-
+server:
+  port: 9000

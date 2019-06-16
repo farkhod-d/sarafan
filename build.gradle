@@ -41,4 +41,5 @@ dependencies {
     implementation "javax.cache:cache-api:1.1.1"
 
     compile group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.1.5.RELEASE'
+    compile('org.springframework.session:spring-session-jdbc')
 }

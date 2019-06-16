@@ -39,7 +39,8 @@ public class MessageController {
     @GetMapping
     @JsonView(Views.Name.class)
     public ResponseEntity<List<Message>> getAllMessages(
-            Pageable pageable, @RequestParam MultiValueMap<String, String> queryParams,
+            Pageable pageable,
+            @RequestParam MultiValueMap<String, String> queryParams,
             UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get a page of Message");
         Page<Message> page = messageService.findAll(pageable);

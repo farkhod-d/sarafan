@@ -6,8 +6,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-
-
 @Entity
 @Table(name = "usr")
 @Data
