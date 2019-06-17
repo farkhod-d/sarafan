@@ -14,17 +14,10 @@
             </v-btn>
         </v-flex>
     </v-layout>
-
-    <!--<v-layout row>-->
-
-    <!--<v-btn @click="save">-->
-    <!--Save-->
-    <!--</v-btn>-->
-    <!--</v-layout>-->
 </template>
 
 <script>
-    import {sendMessage} from "util/ws";
+    import messagesApi from 'api/messages'
 
     export default {
         name: "MessagesForm",
@@ -43,33 +36,34 @@
         },
         methods: {
             save: function () {
-                sendMessage({id: this.id, text: this.text})
-                this.text = '';
-                this.id = null;
-
-                /*const message = {
-                    text: this.text,
+                const message = {
                     id: this.id,
+                    text: this.text
                 };
                 if (this.id) {
-                    this.$resource("/messages{/id}").update({}, message).then(response =>
+                    messagesApi.update(message).then(response =>
                         response.json().then(data => {
-                                const index = getIndex(this.messages, data.id);
+                                const index = this.messages.findIndex(item => item.id === data.id);
                                 this.messages.splice(index, 1, data);
-                                this.text = '';
-                                this.id = null;
                             }
                         )
                     );
                 } else {
-                    this.$resource("/messages{/id}").save({}, message).then(response =>
+                    messagesApi.add(message).then(response =>
                         response.json().then(data => {
-                                this.messages.push(data);
-                                this.text = '';
+                                const index = this.messages.findIndex(item => item.id === data.id);
+                                if (index > -1) {
+                                    this.messages.splice(index, 1, data);
+                                } else {
+                                    this.messages.push(data);
+                                }
                             }
                         )
                     );
-                }*/
+                }
+
+                this.text = '';
+                this.id = null;
             }
         },
     }

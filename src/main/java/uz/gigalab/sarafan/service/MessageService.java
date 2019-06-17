@@ -16,4 +16,5 @@ public interface MessageService {
     Optional<Message> findOne(Long id);
 
     void delete(Long id);
+    void delete(Message message);
 }

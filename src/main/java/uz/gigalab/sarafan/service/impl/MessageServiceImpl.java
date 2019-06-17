@@ -42,4 +42,9 @@ public class MessageServiceImpl implements MessageService {
     public void delete(Long id) {
         messageRepository.deleteById(id);
     }
+
+    @Override
+    public void delete(Message message) {
+        messageRepository.delete(message);
+    }
 }

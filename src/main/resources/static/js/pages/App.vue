@@ -45,7 +45,7 @@
 <script>
     import MessagesList from "componets/messages/MessagesList.vue"
     import {addHandler} from "util/ws";
-    import {getIndex} from "util/collections";
+    import messagesApi from 'api/messages'
 
     export default {
         components: {
@@ -58,54 +58,10 @@
                 drawer: null
             };
         },
-        beforeCreate() {
-            // console.log("beforeCreate")
-            // if (this.profile !== null) {
-            //     this.$resource("/messages{/id}").get().then(response =>
-            //         response.json().then(data => {
-            //             data.forEach(message => {
-            //                 this.messages.push(message);
-            //                 console.log("message push")
-            //                 console.log(message)
-            //             });
-            //             // addHandler(data => {
-            //             //     let index = getIndex(this.messages, data.id)
-            //             //     if (index > -1) {
-            //             //         this.messages.splice(index, 1, data)
-            //             //     } else {
-            //             //         this.messages.push(data)
-            //             //     }
-            //             // })
-            //         })
-            //     );
-            // }
-        },
-        // beforeMount() {
-        //     console.log("beforeMount")
-        // },
-        // mounted() {
-        //     console.log("mounted")
-        // },
-        // beforeUpdate() {
-        //     console.log("beforeUpdate")
-        // },
-        updated() {
-            // console.log("updated")
-            // if (this.profile !== null) {
-            //     addHandler(data => {
-            //         let index = getIndex(this.messages, data.id)
-            //         if (index > -1) {
-            //             this.messages.splice(index, 1, data)
-            //         } else {
-            //             this.messages.push(data)
-            //         }
-            //     })
-            // }
-        },
         created() {
             if (this.profile !== null) {
                 if (this.profile !== null) {
-                    this.$resource("/messages{/id}").get().then(response =>
+                    messagesApi.get().then(response =>
                         response.json().then(data => {
                             data.forEach(message => {
                                 this.messages.push(message);
@@ -113,12 +69,27 @@
                         })
                     );
 
-                    addHandler(message => {
-                        let index = getIndex(this.messages, message.id)
-                        if (index > -1) {
-                            this.messages.splice(index, 1, message)
+                    addHandler(data => {
+                        if (data.objectType === 'MESSAGE') {
+                            const index = this.messages.findIndex(item => item.id === data.body.id);
+                            switch (data.eventType) {
+                                case 'CREATE':
+                                case 'UPDATE':
+                                    if (index > -1) {
+                                        this.messages.splice(index, 1, data.body);
+                                    } else {
+                                        this.messages.push(data.body);
+                                    }
+                                    break;
+                                case 'REMOVE':
+                                    this.messages.splice(index, 1);
+                                    break;
+                                default:
+                                    console.error(`Look like the event type if unknown ${data.eventType}`);
+                                    break;
+                            }
                         } else {
-                            this.messages.push(message)
+                            console.error(`Look like the object type if unknown ${data.objectType}`);
                         }
                     })
                 }

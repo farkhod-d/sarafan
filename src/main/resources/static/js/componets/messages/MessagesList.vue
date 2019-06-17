@@ -19,6 +19,7 @@
 <script>
     import MessagesRow from "componets/messages/MessagesRow.vue"
     import MessagesForm from "componets/messages/MessagesForm.vue"
+    import messagesApi from 'api/messages'
 
     export default {
         name: "MessagesList",
@@ -36,9 +37,12 @@
                 this.message = message
             },
             deleteMessage(message) {
-                this.$resource("/messages{/id}").remove({id: message.id}).then(response => {
+                messagesApi.remove(message.id).then(response => {
                     if (response.ok) {
-                        this.messages.splice(this.messages.indexOf(message), 1)
+                        const index = this.messages.findIndex(item => item.id === message.id);
+                        if (index > -1) {
+                            this.messages.splice(index, 1);
+                        }
                     }
                 })
             }
