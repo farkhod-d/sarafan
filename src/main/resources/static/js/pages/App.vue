@@ -1,5 +1,5 @@
 <template>
-    <v-app id="inspire" dark1>
+    <v-app id="inspire">
         <v-navigation-drawer clipped fixed v-model="drawer" app>
             <v-list dense>
                 <v-list-tile @click="">
@@ -36,7 +36,7 @@
         </v-toolbar>
         <v-content>
             <v-container fluid v-if="profile">
-                <messages-list :messages="messages"/>
+                <messages-list/>
             </v-container>
         </v-content>
     </v-app>
@@ -45,7 +45,7 @@
 <script>
     import MessagesList from "componets/messages/MessagesList.vue"
     import {addHandler} from "util/ws";
-    import messagesApi from 'api/messages'
+    import {mapState, mapActions, mapMutations} from 'vuex';
 
     export default {
         components: {
@@ -53,46 +53,37 @@
         },
         data() {
             return {
-                messages: [],
-                profile: frontendData.profile,
-                drawer: null
-            };
+                drawer: null,
+            }
+        },
+        computed: mapState(['profile', 'messages']),
+        methods: {
+            ...mapActions(['getAllMessagesAction']),
+            ...mapMutations(['addMessageMutations', 'updateMessageMutations', 'removeMessageMutations']),
         },
         created() {
             if (this.profile !== null) {
-                if (this.profile !== null) {
-                    messagesApi.get().then(response =>
-                        response.json().then(data => {
-                            data.forEach(message => {
-                                this.messages.push(message);
-                            });
-                        })
-                    );
-
-                    addHandler(data => {
-                        if (data.objectType === 'MESSAGE') {
-                            const index = this.messages.findIndex(item => item.id === data.body.id);
-                            switch (data.eventType) {
-                                case 'CREATE':
-                                case 'UPDATE':
-                                    if (index > -1) {
-                                        this.messages.splice(index, 1, data.body);
-                                    } else {
-                                        this.messages.push(data.body);
-                                    }
-                                    break;
-                                case 'REMOVE':
-                                    this.messages.splice(index, 1);
-                                    break;
-                                default:
-                                    console.error(`Look like the event type if unknown ${data.eventType}`);
-                                    break;
-                            }
-                        } else {
-                            console.error(`Look like the object type if unknown ${data.objectType}`);
+                this.getAllMessagesAction();
+                addHandler(data => {
+                    if (data.objectType === 'MESSAGE') {
+                        switch (data.eventType) {
+                            case 'CREATE':
+                                this.addMessageMutations(data.body);
+                                break;
+                            case 'UPDATE':
+                                this.updateMessageMutations(data.body);
+                                break;
+                            case 'REMOVE':
+                                this.removeMessageMutations(data.body);
+                                break;
+                            default:
+                                console.error(`Look like the event type if unknown ${data.eventType}`);
+                                break;
                         }
-                    })
-                }
+                    } else {
+                        console.error(`Look like the object type if unknown ${data.objectType}`);
+                    }
+                })
             }
         },
     }

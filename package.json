@@ -5,11 +5,13 @@
   "author": "Farkhod Daniyarov <fudeglan@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "@stomp/stompjs": "^5.4.2",
     "sockjs-client": "^1.3.0",
     "vue": "^2.6.10",
     "vue-resource": "^1.5.1",
-    "vuetify": "^1.5.14"
+    "vuetify": "^1.5.14",
+    "vuex": "^3.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
