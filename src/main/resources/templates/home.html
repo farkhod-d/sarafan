@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Sarafan Home Page</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
     <script th:inline="javascript">
         var frontendData = [[${frontendData}]];
     </script>
 </head>
 <body>
-<h1>Hello World!</h1>
-<div id="app">
-    {{ messages }}
-    <ol>
-        <!-- Создаём экземпляр компонента todo-item -->
-        <todo-item></todo-item>
-    </ol>
-</div>
-
+<div id="app"></div>
 <script th:src="${isDevMode} ? 'http://localhost:8000/main.js' : '/js/main.js'"></script>
 </body>
 </html>

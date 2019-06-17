@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -96,6 +98,13 @@ public class MessageController {
                 .build();
     }
 
+    @MessageMapping("/changeMessage")
+    @SendTo("/topic/activity")
+    @JsonView(Views.Name.class)
+    public Message change(Message message) throws InterruptedException {
+        //Thread.sleep(1000); // simulated delay
+        return messageService.save(message);
+    }
 
 }
 

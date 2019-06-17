@@ -1,11 +1,31 @@
 <template>
-    <div>
-        <input type="text" placeholder="Write something" v-model="text" required="required"/>
-        <input type="button" value="Save" @click="save"/>
-    </div>
+    <v-layout row>
+        <v-flex xs12 sm6 md5>
+            <v-text-field
+                    label="Сообщение"
+                    placeholder="Введите сообщение"
+                    v-model="text"
+                    required="required"
+                    outline></v-text-field>
+        </v-flex>
+        <v-flex xs12 sm6 md3>
+            <v-btn @click="save" large color="primary">
+                Save
+            </v-btn>
+        </v-flex>
+    </v-layout>
+
+    <!--<v-layout row>-->
+
+    <!--<v-btn @click="save">-->
+    <!--Save-->
+    <!--</v-btn>-->
+    <!--</v-layout>-->
 </template>
 
 <script>
+    import {sendMessage} from "util/ws";
+
     export default {
         name: "MessagesForm",
         props: ['messages', 'messageAttr'],
@@ -23,11 +43,14 @@
         },
         methods: {
             save: function () {
-                const message = {
+                sendMessage({id: this.id, text: this.text})
+                this.text = '';
+                this.id = null;
+
+                /*const message = {
                     text: this.text,
                     id: this.id,
                 };
-
                 if (this.id) {
                     this.$resource("/messages{/id}").update({}, message).then(response =>
                         response.json().then(data => {
@@ -46,18 +69,9 @@
                             }
                         )
                     );
-                }
+                }*/
             }
         },
-    }
-
-    function getIndex(list, id) {
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].id === id) {
-                return i;
-            }
-        }
-        return -1;
     }
 </script>
 

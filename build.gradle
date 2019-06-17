@@ -42,4 +42,6 @@ dependencies {
 
     compile group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure', version: '2.1.5.RELEASE'
     compile('org.springframework.session:spring-session-jdbc')
+
+    compile("org.springframework.boot:spring-boot-starter-websocket")
 }

@@ -1,14 +1,19 @@
 <template>
-    <div style="position: relative; width: 300px;">
+    <v-layout align-space-around justify-start column>
         <messages-form v-bind:messages="messages" v-bind:messageAttr="message"/>
-        <messages-row v-for="message in messages"
-                      v-bind:key="message.id"
-                      v-bind:message="message"
-                      v-bind:messages="messages"
-                      v-bind:editMessage="editMessage"
-                      v-bind:deleteMessage="deleteMessage"
-        />
-    </div>
+
+        <v-layout row>
+            <v-flex xs12 sm6>
+            <messages-row v-for="message in sortedMessages"
+                          v-bind:key="message.id"
+                          v-bind:message="message"
+                          v-bind:messages="messages"
+                          v-bind:editMessage="editMessage"
+                          v-bind:deleteMessage="deleteMessage"/>
+
+            </v-flex>
+        </v-layout>
+    </v-layout>
 </template>
 
 <script>
@@ -36,6 +41,11 @@
                         this.messages.splice(this.messages.indexOf(message), 1)
                     }
                 })
+            }
+        },
+        computed: {
+            sortedMessages() {
+                return this.messages.sort((a, b) => -(a.id - b.id))
             }
         }
     }
