@@ -1,17 +1,19 @@
 <template>
-    <v-layout align-space-around justify-start column>
-        <messages-form v-bind:messageAttr="message"/>
+    <v-container fluid>
+        <v-layout align-space-around justify-start column>
+            <messages-form v-bind:messageAttr="message"/>
 
-        <v-layout row>
-            <v-flex xs12 sm6>
-                <messages-row v-for="message in sortedMessages"
-                              v-bind:key="message.id"
-                              v-bind:message="message"
-                              v-bind:editMessage="editMessage"
-                />
-            </v-flex>
+            <v-layout row>
+                <v-flex xs12 sm6>
+                    <messages-row v-for="message in sortedMessages"
+                                  v-bind:key="message.id"
+                                  v-bind:message="message"
+                                  v-bind:editMessage="editMessage"
+                    />
+                </v-flex>
+            </v-layout>
         </v-layout>
-    </v-layout>
+    </v-container>
 </template>
 
 <script>

@@ -27,4 +27,13 @@ public class Message {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonView(Views.Full.class)
     private LocalDateTime createdOn;
+
+    @JsonView(Views.Full.class)
+    private String link;
+    @JsonView(Views.Full.class)
+    private String linkTitle;
+    @JsonView(Views.Full.class)
+    private String linkDescription;
+    @JsonView(Views.Full.class)
+    private String linkCover;
 }

@@ -4,6 +4,7 @@ import '@babel/polyfill'
 
 import 'api/resource'
 import store from 'store/store'
+import router from 'router/router'
 
 import App from 'pages/App.vue'
 import {connect} from "./util/ws";
@@ -17,5 +18,6 @@ if (frontendData.profile !== null) {
 new Vue({
     el: '#app',
     store: store,
+    router,
     render: a => a(App),
 });
