@@ -14,11 +14,10 @@ spring:
     password: 123456
   jpa:
     generate-ddl: true
+    show-sql: false
     properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
+      hibernate.jdbc.lob.non_contextual_creation: true
+      hibernate.format_sql: false
 security:
   oauth2:
     client:
@@ -33,8 +32,5 @@ security:
     resource:
       userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
       preferTokenInfo: true
-
-
-
 server:
   port: 9000

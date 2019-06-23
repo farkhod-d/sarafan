@@ -5,6 +5,7 @@
                     label="Сообщение"
                     placeholder="Введите сообщение"
                     v-model="text"
+                    @keyup.enter="save"
                     required="required"
                     outline></v-text-field>
         </v-flex>

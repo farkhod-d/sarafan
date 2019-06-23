@@ -7,14 +7,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import uz.gigalab.sarafan.domain.Comment;
 import uz.gigalab.sarafan.domain.Message;
+import uz.gigalab.sarafan.domain.User;
 import uz.gigalab.sarafan.domain.Views;
 import uz.gigalab.sarafan.dto.EventType;
 import uz.gigalab.sarafan.dto.MetaDto;
@@ -57,7 +63,7 @@ public class MessageController {
     @GetMapping
     @JsonView(Views.Full.class)
     public ResponseEntity<List<Message>> getAllMessages(
-            Pageable pageable,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam MultiValueMap<String, String> queryParams,
             UriComponentsBuilder uriBuilder) {
         log.debug("REST request to get a page of Message");
@@ -74,12 +80,16 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<Message> createMessage(@RequestBody Message message) throws URISyntaxException, IOException {
+    public ResponseEntity<Message> createMessage(
+            @RequestBody Message message,
+            @AuthenticationPrincipal User user
+    ) throws URISyntaxException, IOException {
         log.debug("REST request to save Message : {}", message);
         if (message.getId() != null) {
-            throw new BadRequestAlertException("A new productCategories cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new Message cannot already have an ID", ENTITY_NAME, "idexists");
         }
         message.setCreatedOn(LocalDateTime.now());
+        message.setAuthor(user);
         fillMeta(message);
 
         Message result = messageService.save(message);
@@ -91,20 +101,20 @@ public class MessageController {
                 .body(result);
     }
 
-    @PutMapping
-    public ResponseEntity<Message> updateMessage(@RequestBody Message message) throws URISyntaxException, IOException {
-        log.debug("REST request to update Messages : {}", message);
-        if (message.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        fillMeta(message);
-        Message result = messageService.save(message);
+    @JsonView(Views.Full.class)
+    @PutMapping("{id}")
+    public Message updateMessage(
+            @PathVariable("id") Message messageFromDb,
+            @RequestBody Message message
+    ) throws URISyntaxException, IOException {
+        messageFromDb.setText(message.getText());
+        fillMeta(messageFromDb);
 
-        wsSender.accept(EventType.UPDATE, result);
+        Message updatedMessage = messageService.save(messageFromDb);
 
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-                .body(result);
+        wsSender.accept(EventType.UPDATE, updatedMessage);
+
+        return updatedMessage;
     }
 
     @DeleteMapping("{id}")
@@ -137,17 +147,21 @@ public class MessageController {
         }
     }
 
-    private MetaDto getMeta(String url) throws IOException {
-        Document doc = Jsoup.connect(url).get();
-        Element title = doc.select("meta[name$=title], meta[property$=title]").first();
-        Element description = doc.select("meta[name$=description], meta[property$=description]").first();
-        Element cover = doc.select("meta[name$=image], meta[property$=image]").first();
-
-        return new MetaDto(
-                getContent(title),
-                getContent(description),
-                getContent(cover)
-        );
+    private MetaDto getMeta(String url) {
+        try {
+            Document doc = Jsoup.connect(url).get();
+            Element title = doc.select("meta[name$=title], meta[property$=title]").first();
+            Element description = doc.select("meta[name$=description], meta[property$=description]").first();
+            Element cover = doc.select("meta[name$=image], meta[property$=image]").first();
+            return new MetaDto(
+                    getContent(title),
+                    getContent(description),
+                    getContent(cover)
+            );
+        } catch (IOException e) {
+            log.error("Cannot get URL: {}", url);
+            return new MetaDto();
+        }
     }
 
     private String getContent(Element el) {
@@ -156,7 +170,7 @@ public class MessageController {
 
 //    @MessageMapping("/changeMessage")
 //    @SendTo("/topic/activity")
-//    @JsonView(Views.Name.class)
+//    @JsonView(Views.IdName.class)
 //    public Message change(Message message) throws InterruptedException {
 //        return messageService.save(message);
 //    }

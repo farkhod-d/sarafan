@@ -11,6 +11,11 @@
                     <v-icon>delete</v-icon>
                 </v-btn>
             </v-card-actions>
+
+            <comment-list
+                    :message-id="message.id"
+                    :comments="message.comments"
+            />
         </v-card>
     </v-flex>
 </template>
@@ -18,10 +23,12 @@
 <script>
     import {mapActions} from 'vuex';
     import Media from 'componets/media/Media.vue'
+    import CommentList from "../comment/CommentList.vue";
 
     export default {
         props: ['message', 'editMessage'],
         components: {
+            CommentList,
             Media
         },
         methods: {

@@ -15,6 +15,6 @@ public class WsSenderConfig {
 
     @Bean
     public BiConsumer<EventType, Message> getWsSender(WsSender wsSender) {
-        return wsSender.getSender(ObjectType.MESSAGE, Views.Name.class);
+        return wsSender.getSender(ObjectType.MESSAGE, Views.IdName.class);
     }
 }

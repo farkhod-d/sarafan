@@ -6,7 +6,7 @@
             <v-layout row>
                 <v-flex xs12 sm6>
                     <messages-row v-for="message in sortedMessages"
-                                  v-bind:key="message.id"
+                                  v-bind:key="'m' + message.id"
                                   v-bind:message="message"
                                   v-bind:editMessage="editMessage"
                     />
