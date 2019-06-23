@@ -3,15 +3,16 @@ jhipster:
     name: Sarafan
 
 spring:
+#  resources.cache.cachecontrol.max-age: 3600
   session:
     jdbc:
       initialize-schema: always
       table-name: SPRING_SESSION
       schema: classpath:db/session_tables.sql
   datasource:
-    url: jdbc:postgresql://localhost:5432/sarafan
-    username: postgres
-    password: 123456
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/sarafan}
+    username: ${JDBC_DATABASE_USERNAME:postgres}
+    password: ${JDBC_DATABASE_PASSWORD:123456}
   jpa:
     generate-ddl: true
     show-sql: false
@@ -21,7 +22,7 @@ spring:
 security:
   oauth2:
     client:
-      clientId: ${clientId}
+      clientId: 750224693367-9vfb5e84ot1amlggps05i0g5e8gbhuju.apps.googleusercontent.com
       clientSecret: ${clientSecret}
       accessTokenUri: https://www.googleapis.com/oauth2/v4/token
       userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth

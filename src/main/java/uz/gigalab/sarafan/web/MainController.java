@@ -20,7 +20,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class MainController {
 
-    @Value("${spring.profiles.active:Unknown}")
+    @Value("${spring.profiles.active:prod}")
     private String profile;
 
     @GetMapping
