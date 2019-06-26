@@ -3,7 +3,7 @@ jhipster:
     name: Sarafan
 
 spring:
-#  resources.cache.cachecontrol.max-age: 3600
+  #resources.cache.cachecontrol.max-age: 3600
   session:
     jdbc:
       initialize-schema: always

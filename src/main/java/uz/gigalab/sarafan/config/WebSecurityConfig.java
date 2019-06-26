@@ -5,15 +5,13 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.transaction.annotation.Transactional;
 import uz.gigalab.sarafan.domain.User;
-import uz.gigalab.sarafan.repository.UserDetailsRepository;
 import uz.gigalab.sarafan.service.UserDetailsService;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @EnableOAuth2Sso
 @EnableWebSecurity
@@ -25,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/**")
                     .authorizeRequests()
-                .antMatchers("/", "/login**", "/error**", "/js/**", "/favicon.ico")
+                .antMatchers("/", "/login**", "/error**")
                     .permitAll()
                 .anyRequest()
                     .authenticated()
@@ -34,7 +32,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/")
                     .permitAll()
                 .and()
-                    .csrf().disable();
+                    .csrf().disable()
+        ;
+        // @formatter:on
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        // @formatter:off
+        web
+            .ignoring()
+            .antMatchers("/js/**", "/css/**", "/favicon.ico")
+        ;
         // @formatter:on
     }
 
